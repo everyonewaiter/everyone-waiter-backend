@@ -16,6 +16,16 @@ import com.everyonewaiter.fixture.user.UserBuilder;
 
 class UserTest {
 
+	@DisplayName("회원가입 이벤트를 등록한다.")
+	@Test
+	void register() {
+		User user = new UserBuilder().build();
+
+		user.register();
+
+		assertThat(user.domainEvents()).hasSize(1);
+	}
+
 	@DisplayName("마지막 로그인 시간을 갱신한다.")
 	@Test
 	void login() {

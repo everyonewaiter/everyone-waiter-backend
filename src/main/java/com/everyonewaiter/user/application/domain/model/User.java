@@ -3,12 +3,14 @@ package com.everyonewaiter.user.application.domain.model;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.everyonewaiter.common.AggregateRoot;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class User {
+public class User extends AggregateRoot {
 
 	private final UserId id;
 
@@ -20,6 +22,10 @@ public class User {
 	private LocalDateTime lastLoggedIn;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+
+	public void register() {
+		registerEvent(new UserRegisterEvent(email));
+	}
 
 	public void login(LocalDateTime now) {
 		this.lastLoggedIn = now;
