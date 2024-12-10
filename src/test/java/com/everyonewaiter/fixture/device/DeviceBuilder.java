@@ -1,15 +1,15 @@
 package com.everyonewaiter.fixture.device;
 
-import com.everyonewaiter.device.application.domain.Device;
-import com.everyonewaiter.device.application.domain.DeviceAccessKey;
-import com.everyonewaiter.device.application.domain.DevicePurpose;
-import com.everyonewaiter.device.application.domain.DeviceStatus;
+import com.everyonewaiter.device.application.domain.model.Device;
+import com.everyonewaiter.device.application.domain.model.DeviceAccessKey;
+import com.everyonewaiter.device.application.domain.model.DevicePurpose;
+import com.everyonewaiter.device.application.domain.model.DeviceStatus;
 
 public class DeviceBuilder {
 
 	private DevicePurpose purpose = DevicePurpose.POS;
 	private DeviceStatus status = DeviceStatus.ACTIVE;
-	private DeviceAccessKey accessKey = new DeviceAccessKey();
+	private final DeviceAccessKey accessKey = new DeviceAccessKey();
 
 	public Device build() {
 		return new Device(purpose, status, accessKey);

@@ -22,10 +22,10 @@ import org.springframework.core.MethodParameter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import com.everyonewaiter.device.application.domain.Device;
-import com.everyonewaiter.device.application.domain.DeviceAccessKey;
-import com.everyonewaiter.device.application.domain.DevicePurpose;
-import com.everyonewaiter.device.application.domain.DeviceStatus;
+import com.everyonewaiter.device.application.domain.model.Device;
+import com.everyonewaiter.device.application.domain.model.DeviceAccessKey;
+import com.everyonewaiter.device.application.domain.model.DevicePurpose;
+import com.everyonewaiter.device.application.domain.model.DeviceStatus;
 import com.everyonewaiter.device.application.port.out.LoadDevicePort;
 import com.everyonewaiter.fixture.device.DeviceBuilder;
 import com.everyonewaiter.fixture.security.AuthenticationDeviceBuilder;

@@ -12,8 +12,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.everyonewaiter.device.application.domain.Device;
-import com.everyonewaiter.device.application.domain.DeviceAccessKey;
+import com.everyonewaiter.device.application.domain.model.Device;
+import com.everyonewaiter.device.application.domain.model.DeviceAccessKey;
 import com.everyonewaiter.device.application.port.out.LoadDevicePort;
 
 import lombok.AccessLevel;
