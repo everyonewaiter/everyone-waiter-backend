@@ -22,6 +22,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import com.everyonewaiter.fixture.security.AuthenticationUserBuilder;
+import com.everyonewaiter.fixture.user.EmailBuilder;
 import com.everyonewaiter.fixture.user.UserBuilder;
 import com.everyonewaiter.user.application.domain.Email;
 import com.everyonewaiter.user.application.domain.User;
@@ -68,13 +69,13 @@ class AuthenticationUserResolverTest {
 
 	@DisplayName("모든 유효성 검사를 통과하면 유저 인스턴스를 반환한다.")
 	@MethodSource("resolveUserArgs")
-	@ParameterizedTest(name = "[{index}] => {0}")
+	@ParameterizedTest(name = "[{index}] => 권한: {0}")
 	void resolveUser(UserRole role, AuthenticationUser authenticationUser) {
 		User user = new UserBuilder().setRole(role).build();
 
 		when(request.getHeader(any())).thenReturn(BEARER_TOKEN);
 		when(jwtProvider.decode(any())).thenReturn(Optional.of(user.getEmail()));
-		when(loadUserPort.loadUser(any(Email.class))).thenReturn(user);
+		when(loadUserPort.loadUser(any(Email.class))).thenReturn(Optional.of(user));
 		when(parameter.getParameterAnnotation(AuthenticationUser.class)).thenReturn(authenticationUser);
 
 		User actual = authenticationUserResolver.resolveArgument(parameter, null, request, null);
@@ -90,15 +91,16 @@ class AuthenticationUserResolverTest {
 		);
 	}
 
-	@DisplayName("사용자의 필요 권한 검사에 실패한 경우 예외가 발생한다.")
+	@SuppressWarnings("unused")
+	@DisplayName("사용자의 필요 권한 검사에 실패한 경우 권한 예외가 발생한다.")
 	@MethodSource("failResolveUserArgs")
-	@ParameterizedTest(name = "[{index}] => {0}")
-	void failResolve(UserRole role, AuthenticationUser authenticationUser) {
+	@ParameterizedTest(name = "[{index}] => 권한: {0}, 필요 권한: {2}")
+	void failResolve(UserRole role, AuthenticationUser authenticationUser, UserRole permission) {
 		User user = new UserBuilder().setRole(role).build();
 
 		when(request.getHeader(any())).thenReturn(BEARER_TOKEN);
 		when(jwtProvider.decode(any())).thenReturn(Optional.of(user.getEmail()));
-		when(loadUserPort.loadUser(any(Email.class))).thenReturn(user);
+		when(loadUserPort.loadUser(any(Email.class))).thenReturn(Optional.of(user));
 		when(parameter.getParameterAnnotation(AuthenticationUser.class)).thenReturn(authenticationUser);
 
 		assertThatThrownBy(() -> authenticationUserResolver.resolveArgument(parameter, null, request, null))
@@ -107,13 +109,13 @@ class AuthenticationUserResolverTest {
 
 	static Stream<Arguments> failResolveUserArgs() {
 		return Stream.of(
-			Arguments.of(UserRole.USER, new AuthenticationUserBuilder().setOwner(true).build()),
-			Arguments.of(UserRole.USER, new AuthenticationUserBuilder().setAdministrator(true).build()),
-			Arguments.of(UserRole.OWNER, new AuthenticationUserBuilder().setAdministrator(true).build())
+			Arguments.of(UserRole.USER, new AuthenticationUserBuilder().setOwner(true).build(), UserRole.OWNER),
+			Arguments.of(UserRole.USER, new AuthenticationUserBuilder().setAdministrator(true).build(), UserRole.ADMIN),
+			Arguments.of(UserRole.OWNER, new AuthenticationUserBuilder().setAdministrator(true).build(), UserRole.ADMIN)
 		);
 	}
 
-	@DisplayName("요청에서 토큰을 추출할 수 없는 경우 예외가 발생한다.")
+	@DisplayName("요청에서 토큰을 추출할 수 없는 경우 인증 예외가 발생한다.")
 	@Test
 	void failExtractToken() {
 		when(request.getHeader(any())).thenReturn(null);
@@ -121,11 +123,24 @@ class AuthenticationUserResolverTest {
 			.isInstanceOf(AuthenticationException.class);
 	}
 
-	@DisplayName("토큰이 유효하지 않은 경우 예외가 발생한다.")
+	@DisplayName("토큰이 유효하지 않은 경우 인증 예외가 발생한다.")
 	@Test
 	void invalidToken() {
 		when(request.getHeader(any())).thenReturn(BEARER_TOKEN);
 		when(jwtProvider.decode(any())).thenReturn(Optional.empty());
+		assertThatThrownBy(() -> authenticationUserResolver.resolveArgument(parameter, null, request, null))
+			.isInstanceOf(AuthenticationException.class);
+	}
+
+	@DisplayName("사용자를 찾지 못한다면 인증 예외가 발생한다.")
+	@Test
+	void notFoundUser() {
+		Email email = new EmailBuilder().build();
+
+		when(request.getHeader(any())).thenReturn(BEARER_TOKEN);
+		when(jwtProvider.decode(any())).thenReturn(Optional.of(email));
+		when(loadUserPort.loadUser(any(Email.class))).thenReturn(Optional.empty());
+
 		assertThatThrownBy(() -> authenticationUserResolver.resolveArgument(parameter, null, request, null))
 			.isInstanceOf(AuthenticationException.class);
 	}

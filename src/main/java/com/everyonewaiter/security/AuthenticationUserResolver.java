@@ -46,7 +46,7 @@ class AuthenticationUserResolver implements HandlerMethodArgumentResolver {
 	) {
 		String accessToken = extractToken(webRequest).orElseThrow(AuthenticationException::new);
 		Email email = jwtProvider.decode(accessToken).orElseThrow(AuthenticationException::new);
-		User user = loadUserPort.loadUser(email);
+		User user = loadUserPort.loadUser(email).orElseThrow(AuthenticationException::new);
 		validateUserAccess(user, parameter);
 		return user;
 	}
