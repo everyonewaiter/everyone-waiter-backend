@@ -14,9 +14,11 @@ import lombok.RequiredArgsConstructor;
 class AuthenticationResolverConfiguration implements WebMvcConfigurer {
 
 	private final AuthenticationUserResolver authenticationUserResolver;
+	private final AuthenticationDeviceResolver authenticationDeviceResolver;
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
 		resolvers.add(authenticationUserResolver);
+		resolvers.add(authenticationDeviceResolver);
 	}
 }
