@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.everyonewaiter.fixture.user.EmailBuilder;
-import com.everyonewaiter.user.application.domain.Email;
+import com.everyonewaiter.user.application.domain.model.Email;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Encoders;

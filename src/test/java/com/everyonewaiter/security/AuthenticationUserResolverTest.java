@@ -24,9 +24,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import com.everyonewaiter.fixture.security.AuthenticationUserBuilder;
 import com.everyonewaiter.fixture.user.EmailBuilder;
 import com.everyonewaiter.fixture.user.UserBuilder;
-import com.everyonewaiter.user.application.domain.Email;
-import com.everyonewaiter.user.application.domain.User;
-import com.everyonewaiter.user.application.domain.UserRole;
+import com.everyonewaiter.user.application.domain.model.Email;
+import com.everyonewaiter.user.application.domain.model.User;
+import com.everyonewaiter.user.application.domain.model.UserRole;
 import com.everyonewaiter.user.application.port.out.LoadUserPort;
 
 @ExtendWith(MockitoExtension.class)

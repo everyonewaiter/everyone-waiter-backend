@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.everyonewaiter.common.GenerateJwtPort;
-import com.everyonewaiter.user.application.domain.Email;
+import com.everyonewaiter.user.application.domain.model.Email;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

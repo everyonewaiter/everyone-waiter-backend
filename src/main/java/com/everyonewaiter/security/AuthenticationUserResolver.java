@@ -12,9 +12,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.everyonewaiter.user.application.domain.Email;
-import com.everyonewaiter.user.application.domain.User;
-import com.everyonewaiter.user.application.domain.UserRole;
+import com.everyonewaiter.user.application.domain.model.Email;
+import com.everyonewaiter.user.application.domain.model.User;
+import com.everyonewaiter.user.application.domain.model.UserRole;
 import com.everyonewaiter.user.application.port.out.LoadUserPort;
 
 import lombok.AccessLevel;

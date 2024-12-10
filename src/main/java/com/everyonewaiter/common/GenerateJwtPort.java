@@ -1,6 +1,6 @@
 package com.everyonewaiter.common;
 
-import com.everyonewaiter.user.application.domain.Email;
+import com.everyonewaiter.user.application.domain.model.Email;
 
 public interface GenerateJwtPort {
 
