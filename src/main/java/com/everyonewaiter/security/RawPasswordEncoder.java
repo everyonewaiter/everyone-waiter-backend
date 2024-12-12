@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class RawPasswordEncoder implements Encoder<Encodable, Decodable> {
+public class RawPasswordEncoder implements Encoder<Encodable, Decodable> {
 
 	private final PasswordEncoder passwordEncoder;
 

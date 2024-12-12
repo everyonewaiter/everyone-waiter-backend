@@ -26,7 +26,7 @@ import com.everyonewaiter.device.application.domain.model.Device;
 import com.everyonewaiter.device.application.domain.model.DeviceAccessKey;
 import com.everyonewaiter.device.application.domain.model.DevicePurpose;
 import com.everyonewaiter.device.application.domain.model.DeviceStatus;
-import com.everyonewaiter.device.application.port.out.LoadDevicePort;
+import com.everyonewaiter.device.application.port.out.DeviceFindPort;
 import com.everyonewaiter.fixture.device.DeviceBuilder;
 import com.everyonewaiter.fixture.security.AuthenticationDeviceBuilder;
 
@@ -42,7 +42,7 @@ class AuthenticationDeviceResolverTest {
 	SignatureEncoder signatureEncoder;
 
 	@Mock
-	LoadDevicePort loadDevicePort;
+	DeviceFindPort deviceFindPort;
 
 	@Mock
 	NativeWebRequest request;
@@ -79,7 +79,7 @@ class AuthenticationDeviceResolverTest {
 		when(request.getHeader(ACCESS_KEY_HEADER)).thenReturn(ACCESS_KEY);
 		when(request.getHeader(SIGNATURE_HEADER)).thenReturn(SIGNATURE);
 		when(signatureEncoder.matches(any(), any())).thenReturn(true);
-		when(loadDevicePort.loadDevice(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
+		when(deviceFindPort.find(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
 		when(parameter.getParameterAnnotation(AuthenticationDevice.class)).thenReturn(authenticationDevice);
 
 		Device actual = authenticationDeviceResolver.resolveArgument(parameter, null, request, null);
@@ -105,7 +105,7 @@ class AuthenticationDeviceResolverTest {
 		when(request.getHeader(ACCESS_KEY_HEADER)).thenReturn(ACCESS_KEY);
 		when(request.getHeader(SIGNATURE_HEADER)).thenReturn(SIGNATURE);
 		when(signatureEncoder.matches(any(), any())).thenReturn(true);
-		when(loadDevicePort.loadDevice(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
+		when(deviceFindPort.find(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
 		when(parameter.getParameterAnnotation(AuthenticationDevice.class)).thenReturn(authenticationDevice);
 
 		assertThatThrownBy(() -> authenticationDeviceResolver.resolveArgument(parameter, null, request, null))
@@ -135,7 +135,7 @@ class AuthenticationDeviceResolverTest {
 	void notFoundDevice() {
 		when(request.getHeader(ACCESS_KEY_HEADER)).thenReturn(ACCESS_KEY);
 		when(request.getHeader(SIGNATURE_HEADER)).thenReturn(SIGNATURE);
-		when(loadDevicePort.loadDevice(any(DeviceAccessKey.class))).thenReturn(Optional.empty());
+		when(deviceFindPort.find(any(DeviceAccessKey.class))).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> authenticationDeviceResolver.resolveArgument(parameter, null, request, null))
 			.isInstanceOf(AuthenticationException.class);
@@ -148,7 +148,7 @@ class AuthenticationDeviceResolverTest {
 
 		when(request.getHeader(ACCESS_KEY_HEADER)).thenReturn(ACCESS_KEY);
 		when(request.getHeader(SIGNATURE_HEADER)).thenReturn(SIGNATURE);
-		when(loadDevicePort.loadDevice(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
+		when(deviceFindPort.find(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
 
 		assertThatThrownBy(() -> authenticationDeviceResolver.resolveArgument(parameter, null, request, null))
 			.isInstanceOf(AccessDeniedException.class);
@@ -161,7 +161,7 @@ class AuthenticationDeviceResolverTest {
 
 		when(request.getHeader(ACCESS_KEY_HEADER)).thenReturn(ACCESS_KEY);
 		when(request.getHeader(SIGNATURE_HEADER)).thenReturn(SIGNATURE);
-		when(loadDevicePort.loadDevice(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
+		when(deviceFindPort.find(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
 		when(signatureEncoder.matches(any(), any())).thenReturn(false);
 
 		assertThatThrownBy(() -> authenticationDeviceResolver.resolveArgument(parameter, null, request, null))

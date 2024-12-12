@@ -6,11 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@RequiredArgsConstructor
 class AuthenticationResolverConfiguration implements WebMvcConfigurer {
 
 	private final AuthenticationUserResolver authenticationUserResolver;

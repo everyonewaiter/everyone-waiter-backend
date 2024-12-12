@@ -18,10 +18,10 @@ class UserTest {
 
 	@DisplayName("회원가입 이벤트를 등록한다.")
 	@Test
-	void register() {
+	void signUp() {
 		User user = new UserBuilder().build();
 
-		user.register();
+		user.signUp();
 
 		assertThat(user.domainEvents()).hasSize(1);
 	}
@@ -104,12 +104,11 @@ class UserTest {
 		assertThat(user.getGrantedAuthority()).isEqualTo(user.getRole().name());
 	}
 
-	@DisplayName("서로 다른 인스턴스여도 id가 같다면 같은 사용자이다.")
+	@DisplayName("서로 다른 인스턴스여도 id의 값이 같다면 같은 사용자이다.")
 	@Test
 	void equalsAndHashCode() {
-		UserId userId = new UserId(1L);
-		User user1 = new UserBuilder().setId(userId).build();
-		User user2 = new UserBuilder().setId(userId).build();
+		User user1 = new UserBuilder().setId(new UserId(1L)).build();
+		User user2 = new UserBuilder().setId(new UserId(1L)).build();
 		assertThat(user1).isEqualTo(user2).hasSameHashCodeAs(user2);
 	}
 }

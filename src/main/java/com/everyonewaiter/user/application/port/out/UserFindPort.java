@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.everyonewaiter.user.application.domain.model.Email;
 import com.everyonewaiter.user.application.domain.model.User;
 
-public interface LoadUserPort {
+public interface UserFindPort {
 
-	Optional<User> loadUser(Email email);
+	Optional<User> find(Email email);
 }

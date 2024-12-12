@@ -1,18 +1,21 @@
 package com.everyonewaiter.user.application.domain.model;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import com.everyonewaiter.common.AggregateRoot;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class User extends AggregateRoot {
 
 	private final UserId id;
+	private final LocalDateTime createdAt;
+	private final LocalDateTime updatedAt;
 
 	private Email email;
 	private EncodedPassword password;
@@ -20,11 +23,14 @@ public class User extends AggregateRoot {
 	private UserRole role;
 	private UserStatus status;
 	private LocalDateTime lastLoggedIn;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
 
-	public void register() {
-		registerEvent(new UserRegisterEvent(email));
+	public static User create(Email email, EncodedPassword password, PhoneNumber phoneNumber) {
+		LocalDateTime now = LocalDateTime.now();
+		return new User(new UserId(), now, now, email, password, phoneNumber, UserRole.USER, UserStatus.INACTIVE, now);
+	}
+
+	public void signUp() {
+		registerEvent(new UserSignUpEvent(email));
 	}
 
 	public void login(LocalDateTime now) {
@@ -45,18 +51,5 @@ public class User extends AggregateRoot {
 
 	public String getGrantedAuthority() {
 		return this.role.name();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof User user)) {
-			return false;
-		}
-		return Objects.equals(id, user.id);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(id);
 	}
 }
