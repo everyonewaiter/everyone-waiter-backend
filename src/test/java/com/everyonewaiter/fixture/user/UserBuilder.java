@@ -18,12 +18,12 @@ public class UserBuilder {
 	private PhoneNumber phoneNumber = new PhoneNumberBuilder().build();
 	private UserRole role = UserRole.USER;
 	private UserStatus status = UserStatus.ACTIVE;
-	private final LocalDateTime lastLoggedIn = LocalDateTime.now();
+	private LocalDateTime lastSignInTime = LocalDateTime.now();
 	private final LocalDateTime createdAt = LocalDateTime.now();
 	private final LocalDateTime updatedAt = LocalDateTime.now();
 
 	public User build() {
-		return new User(id, createdAt, updatedAt, email, password, phoneNumber, role, status, lastLoggedIn);
+		return new User(id, createdAt, updatedAt, email, password, phoneNumber, role, status, lastSignInTime);
 	}
 
 	public UserBuilder setId(UserId id) {
@@ -53,6 +53,11 @@ public class UserBuilder {
 
 	public UserBuilder setStatus(UserStatus status) {
 		this.status = status;
+		return this;
+	}
+
+	public UserBuilder setLastSignInTime(LocalDateTime lastSignInTime) {
+		this.lastSignInTime = lastSignInTime;
 		return this;
 	}
 }

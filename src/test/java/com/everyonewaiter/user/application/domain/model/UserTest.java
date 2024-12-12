@@ -28,13 +28,13 @@ class UserTest {
 
 	@DisplayName("마지막 로그인 시간을 갱신한다.")
 	@Test
-	void login() {
+	void signIn() {
 		User user = new UserBuilder().build();
 		LocalDateTime now = LocalDateTime.now();
 
-		user.login(now);
+		user.signIn(now);
 
-		assertThat(user.getLastLoggedIn()).isEqualTo(now);
+		assertThat(user.getLastSignInTime()).isEqualTo(now);
 	}
 
 	@DisplayName("사용자가 입력하는 권한을 가지고 있는지 확인한다.")

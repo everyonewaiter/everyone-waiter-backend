@@ -19,7 +19,7 @@ class UserEntity extends BaseRootEntity {
 	private final String phoneNumber;
 	private final UserRole role;
 	private final UserStatus status;
-	private final LocalDateTime lastLoggedIn;
+	private final LocalDateTime lastSignInTime;
 
 	UserEntity(
 		Long id,
@@ -30,7 +30,7 @@ class UserEntity extends BaseRootEntity {
 		String phoneNumber,
 		UserRole role,
 		UserStatus status,
-		LocalDateTime lastLoggedIn
+		LocalDateTime lastSignInTime
 	) {
 		super(id, createdAt, updatedAt);
 		this.email = email;
@@ -38,7 +38,7 @@ class UserEntity extends BaseRootEntity {
 		this.phoneNumber = phoneNumber;
 		this.role = role;
 		this.status = status;
-		this.lastLoggedIn = lastLoggedIn;
+		this.lastSignInTime = lastSignInTime;
 	}
 
 	@Override

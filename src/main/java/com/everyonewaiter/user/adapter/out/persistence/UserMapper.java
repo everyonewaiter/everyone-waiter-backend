@@ -20,7 +20,7 @@ class UserMapper {
 			new PhoneNumber(userEntity.getPhoneNumber()),
 			userEntity.getRole(),
 			userEntity.getStatus(),
-			userEntity.getLastLoggedIn()
+			userEntity.getLastSignInTime()
 		);
 	}
 
@@ -34,7 +34,7 @@ class UserMapper {
 			user.getPhoneNumber().value(),
 			user.getRole(),
 			user.getStatus(),
-			user.getLastLoggedIn()
+			user.getLastSignInTime()
 		);
 	}
 }

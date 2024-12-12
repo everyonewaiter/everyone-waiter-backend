@@ -22,7 +22,7 @@ public class User extends AggregateRoot {
 	private PhoneNumber phoneNumber;
 	private UserRole role;
 	private UserStatus status;
-	private LocalDateTime lastLoggedIn;
+	private LocalDateTime lastSignInTime;
 
 	public static User create(Email email, EncodedPassword password, PhoneNumber phoneNumber) {
 		LocalDateTime now = LocalDateTime.now();
@@ -33,8 +33,8 @@ public class User extends AggregateRoot {
 		registerEvent(new UserSignUpEvent(email));
 	}
 
-	public void login(LocalDateTime now) {
-		this.lastLoggedIn = now;
+	public void signIn(LocalDateTime now) {
+		this.lastSignInTime = now;
 	}
 
 	public boolean hasRole(UserRole role) {
