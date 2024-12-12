@@ -78,7 +78,7 @@ class AuthenticationDeviceResolverTest {
 
 		when(request.getHeader(ACCESS_KEY_HEADER)).thenReturn(ACCESS_KEY);
 		when(request.getHeader(SIGNATURE_HEADER)).thenReturn(SIGNATURE);
-		when(signatureEncoder.matches(any(), any())).thenReturn(true);
+		when(signatureEncoder.matches(any(SecureEncodable.class), any(Decodable.class))).thenReturn(true);
 		when(deviceFindPort.find(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
 		when(parameter.getParameterAnnotation(AuthenticationDevice.class)).thenReturn(authenticationDevice);
 
@@ -104,7 +104,7 @@ class AuthenticationDeviceResolverTest {
 
 		when(request.getHeader(ACCESS_KEY_HEADER)).thenReturn(ACCESS_KEY);
 		when(request.getHeader(SIGNATURE_HEADER)).thenReturn(SIGNATURE);
-		when(signatureEncoder.matches(any(), any())).thenReturn(true);
+		when(signatureEncoder.matches(any(SecureEncodable.class), any(Decodable.class))).thenReturn(true);
 		when(deviceFindPort.find(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
 		when(parameter.getParameterAnnotation(AuthenticationDevice.class)).thenReturn(authenticationDevice);
 
@@ -162,7 +162,7 @@ class AuthenticationDeviceResolverTest {
 		when(request.getHeader(ACCESS_KEY_HEADER)).thenReturn(ACCESS_KEY);
 		when(request.getHeader(SIGNATURE_HEADER)).thenReturn(SIGNATURE);
 		when(deviceFindPort.find(any(DeviceAccessKey.class))).thenReturn(Optional.of(device));
-		when(signatureEncoder.matches(any(), any())).thenReturn(false);
+		when(signatureEncoder.matches(any(SecureEncodable.class), any(Decodable.class))).thenReturn(false);
 
 		assertThatThrownBy(() -> authenticationDeviceResolver.resolveArgument(parameter, null, request, null))
 			.isInstanceOf(AuthenticationException.class);
