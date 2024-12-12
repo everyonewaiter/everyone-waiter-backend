@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @ConfigurationProperties(prefix = "allow.client")
 @RequiredArgsConstructor
-class ClientOriginRegistry {
+public class ClientOriginRegistry {
 
 	private final List<String> urls;
 
