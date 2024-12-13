@@ -15,6 +15,7 @@ java {
 }
 
 configurations {
+    asciidoctorExt
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -46,6 +47,8 @@ dependencies {
 
     annotationProcessor 'org.projectlombok:lombok'
 
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
@@ -54,12 +57,42 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+def generated = 'src/main/generated'
+
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+tasks.named('clean') {
+    delete file(generated)
+}
+
 tasks.named('test') {
     outputs.dir snippetsDir
     useJUnitPlatform()
 }
 
-tasks.named('asciidoctor') {
+asciidoctor {
+    delete file('src/main/resources/static/docs')
     inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    baseDirFollowsSourceFile()
     dependsOn test
+}
+
+tasks.register('copyDocument', Copy) {
+    from file('build/docs/asciidoc')
+    into file('src/main/resources/static/docs')
+    dependsOn asciidoctor
+}
+
+bootJar {
+    from("${asciidoctor.outputDir}") {
+        into 'BOOT-INF/classes/static/docs'
+    }
+    dependsOn copyDocument
+}
+
+tasks.named('build') {
+    dependsOn copyDocument
 }
