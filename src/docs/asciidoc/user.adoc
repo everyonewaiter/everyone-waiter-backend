@@ -3,3 +3,9 @@
 === 가입
 
 operation::user-sign-up[snippets='http-request,request-fields,http-response,response-headers']
+
+=== 로그인
+
+로그인 시 발급되는 액세스 토큰의 유효기간은 3시간입니다.
+
+operation::user-sign-in[snippets='http-request,request-fields,http-response,response-fields']
