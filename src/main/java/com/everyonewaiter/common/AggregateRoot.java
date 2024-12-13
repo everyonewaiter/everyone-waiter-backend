@@ -17,6 +17,10 @@ public abstract class AggregateRoot {
 		domainEvents.add(event);
 	}
 
+	protected void clearDomainEvents() {
+		domainEvents.clear();
+	}
+
 	public Collection<Object> domainEvents() {
 		return Collections.unmodifiableCollection(domainEvents);
 	}
