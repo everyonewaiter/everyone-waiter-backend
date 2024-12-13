@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-class AuthenticationDeviceResolver implements HandlerMethodArgumentResolver {
+public class AuthenticationDeviceResolver implements HandlerMethodArgumentResolver {
 
 	private static final String ACCESS_KEY = "x-ew-access-key";
 	private static final String SIGNATURE = "x-ew-signature";

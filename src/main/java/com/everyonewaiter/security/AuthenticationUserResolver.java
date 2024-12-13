@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-class AuthenticationUserResolver implements HandlerMethodArgumentResolver {
+public class AuthenticationUserResolver implements HandlerMethodArgumentResolver {
 
 	private static final String BEARER = "Bearer ";
 
