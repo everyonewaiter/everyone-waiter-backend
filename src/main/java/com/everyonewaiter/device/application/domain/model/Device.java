@@ -1,4 +1,4 @@
-package com.everyonewaiter.device.application.domain;
+package com.everyonewaiter.device.application.domain.model;
 
 import com.everyonewaiter.security.SecureEncodable;
 

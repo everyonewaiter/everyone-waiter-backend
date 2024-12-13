@@ -12,23 +12,22 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.everyonewaiter.user.application.domain.Email;
-import com.everyonewaiter.user.application.domain.User;
-import com.everyonewaiter.user.application.domain.UserRole;
-import com.everyonewaiter.user.application.port.out.LoadUserPort;
+import com.everyonewaiter.user.application.domain.model.Email;
+import com.everyonewaiter.user.application.domain.model.User;
+import com.everyonewaiter.user.application.domain.model.UserRole;
+import com.everyonewaiter.user.application.port.out.UserFindPort;
 
-import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class AuthenticationUserResolver implements HandlerMethodArgumentResolver {
+@RequiredArgsConstructor
+public class AuthenticationUserResolver implements HandlerMethodArgumentResolver {
 
 	private static final String BEARER = "Bearer ";
 
 	private final JwtProvider jwtProvider;
-	private final LoadUserPort loadUserPort;
+	private final UserFindPort userFindPort;
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
@@ -46,7 +45,7 @@ class AuthenticationUserResolver implements HandlerMethodArgumentResolver {
 	) {
 		String accessToken = extractToken(webRequest).orElseThrow(AuthenticationException::new);
 		Email email = jwtProvider.decode(accessToken).orElseThrow(AuthenticationException::new);
-		User user = loadUserPort.loadUser(email).orElseThrow(AuthenticationException::new);
+		User user = userFindPort.find(email).orElseThrow(AuthenticationException::new);
 		validateUserAccess(user, parameter);
 		return user;
 	}

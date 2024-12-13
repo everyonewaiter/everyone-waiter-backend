@@ -8,15 +8,14 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.everyonewaiter.common.GenerateJwtPort;
-import com.everyonewaiter.user.application.domain.Email;
+import com.everyonewaiter.user.application.domain.model.Email;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-class JwtProvider implements GenerateJwtPort {
+public class JwtProvider {
 
 	private static final Long THREE_HOURS_MILLISECONDS = 1000L * 60L * 60L * 3L;
 
@@ -26,12 +25,10 @@ class JwtProvider implements GenerateJwtPort {
 		this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 	}
 
-	@Override
 	public String generate(Email email) {
 		return generate(email, THREE_HOURS_MILLISECONDS);
 	}
 
-	@Override
 	public String generate(Email email, Long expirationMillisecond) {
 		Date now = new Date();
 		Date expiration = new Date(now.getTime() + expirationMillisecond);

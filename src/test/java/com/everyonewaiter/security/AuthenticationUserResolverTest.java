@@ -24,10 +24,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import com.everyonewaiter.fixture.security.AuthenticationUserBuilder;
 import com.everyonewaiter.fixture.user.EmailBuilder;
 import com.everyonewaiter.fixture.user.UserBuilder;
-import com.everyonewaiter.user.application.domain.Email;
-import com.everyonewaiter.user.application.domain.User;
-import com.everyonewaiter.user.application.domain.UserRole;
-import com.everyonewaiter.user.application.port.out.LoadUserPort;
+import com.everyonewaiter.user.application.domain.model.Email;
+import com.everyonewaiter.user.application.domain.model.User;
+import com.everyonewaiter.user.application.domain.model.UserRole;
+import com.everyonewaiter.user.application.port.out.UserFindPort;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationUserResolverTest {
@@ -38,7 +38,7 @@ class AuthenticationUserResolverTest {
 	JwtProvider jwtProvider;
 
 	@Mock
-	LoadUserPort loadUserPort;
+	UserFindPort userFindPort;
 
 	@Mock
 	NativeWebRequest request;
@@ -75,7 +75,7 @@ class AuthenticationUserResolverTest {
 
 		when(request.getHeader(any())).thenReturn(BEARER_TOKEN);
 		when(jwtProvider.decode(any())).thenReturn(Optional.of(user.getEmail()));
-		when(loadUserPort.loadUser(any(Email.class))).thenReturn(Optional.of(user));
+		when(userFindPort.find(any(Email.class))).thenReturn(Optional.of(user));
 		when(parameter.getParameterAnnotation(AuthenticationUser.class)).thenReturn(authenticationUser);
 
 		User actual = authenticationUserResolver.resolveArgument(parameter, null, request, null);
@@ -100,7 +100,7 @@ class AuthenticationUserResolverTest {
 
 		when(request.getHeader(any())).thenReturn(BEARER_TOKEN);
 		when(jwtProvider.decode(any())).thenReturn(Optional.of(user.getEmail()));
-		when(loadUserPort.loadUser(any(Email.class))).thenReturn(Optional.of(user));
+		when(userFindPort.find(any(Email.class))).thenReturn(Optional.of(user));
 		when(parameter.getParameterAnnotation(AuthenticationUser.class)).thenReturn(authenticationUser);
 
 		assertThatThrownBy(() -> authenticationUserResolver.resolveArgument(parameter, null, request, null))
@@ -139,7 +139,7 @@ class AuthenticationUserResolverTest {
 
 		when(request.getHeader(any())).thenReturn(BEARER_TOKEN);
 		when(jwtProvider.decode(any())).thenReturn(Optional.of(email));
-		when(loadUserPort.loadUser(any(Email.class))).thenReturn(Optional.empty());
+		when(userFindPort.find(any(Email.class))).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> authenticationUserResolver.resolveArgument(parameter, null, request, null))
 			.isInstanceOf(AuthenticationException.class);

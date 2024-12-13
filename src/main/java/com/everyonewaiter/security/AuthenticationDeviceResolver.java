@@ -12,23 +12,22 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.everyonewaiter.device.application.domain.Device;
-import com.everyonewaiter.device.application.domain.DeviceAccessKey;
-import com.everyonewaiter.device.application.port.out.LoadDevicePort;
+import com.everyonewaiter.device.application.domain.model.Device;
+import com.everyonewaiter.device.application.domain.model.DeviceAccessKey;
+import com.everyonewaiter.device.application.port.out.DeviceFindPort;
 
-import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class AuthenticationDeviceResolver implements HandlerMethodArgumentResolver {
+@RequiredArgsConstructor
+public class AuthenticationDeviceResolver implements HandlerMethodArgumentResolver {
 
 	private static final String ACCESS_KEY = "x-ew-access-key";
 	private static final String SIGNATURE = "x-ew-signature";
 
+	private final DeviceFindPort deviceFindPort;
 	private final SignatureEncoder signatureEncoder;
-	private final LoadDevicePort loadDevicePort;
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
@@ -48,7 +47,7 @@ class AuthenticationDeviceResolver implements HandlerMethodArgumentResolver {
 		DeviceAccessKey accessKey = pair.getFirst();
 		Signature signature = pair.getSecond();
 
-		Device device = loadDevicePort.loadDevice(accessKey).orElseThrow(AuthenticationException::new);
+		Device device = deviceFindPort.find(accessKey).orElseThrow(AuthenticationException::new);
 		processAuthentication(device, signature, parameter);
 		return device;
 	}

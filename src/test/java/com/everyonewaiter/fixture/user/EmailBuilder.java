@@ -1,6 +1,6 @@
 package com.everyonewaiter.fixture.user;
 
-import com.everyonewaiter.user.application.domain.Email;
+import com.everyonewaiter.user.application.domain.model.Email;
 
 public class EmailBuilder {
 

@@ -3,12 +3,11 @@ package com.everyonewaiter.security;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class RawPasswordEncoder implements Encoder<Encodable, Decodable> {
+@RequiredArgsConstructor
+public class RawPasswordEncoder implements Encoder<Encodable, Decodable> {
 
 	private final PasswordEncoder passwordEncoder;
 

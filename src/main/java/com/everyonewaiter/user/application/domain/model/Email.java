@@ -1,4 +1,4 @@
-package com.everyonewaiter.user.application.domain;
+package com.everyonewaiter.user.application.domain.model;
 
 import static com.everyonewaiter.common.ExceptionMessageFormatter.*;
 import static com.everyonewaiter.common.PreconditionChecker.*;
