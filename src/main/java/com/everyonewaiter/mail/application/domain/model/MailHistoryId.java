@@ -7,4 +7,9 @@ public record MailHistoryId(Long value) {
 	public MailHistoryId() {
 		this(TsidCreator.getTsid().toLong());
 	}
+
+	@Override
+	public String toString() {
+		return value.toString();
+	}
 }

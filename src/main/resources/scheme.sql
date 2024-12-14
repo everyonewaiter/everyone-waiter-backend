@@ -24,4 +24,17 @@ CREATE TABLE device
     updated_at DATETIME(6) NOT NULL
 ) ENGINE = InnoDB;
 
+CREATE TABLE mail_history
+(
+    id         BIGINT PRIMARY KEY,
+    sender     VARCHAR(50)              NOT NULL,
+    recipients TEXT                     NOT NULL,
+    subject    VARCHAR(50)              NOT NULL,
+    content    TEXT                     NOT NULL,
+    status     ENUM ('SUCCESS', 'FAIL') NOT NULL,
+    cause      TEXT                     NOT NULL,
+    created_at DATETIME(6)              NOT NULL,
+    updated_at DATETIME(6)              NOT NULL
+) ENGINE = InnoDB;
+
 SET FOREIGN_KEY_CHECKS = 1;

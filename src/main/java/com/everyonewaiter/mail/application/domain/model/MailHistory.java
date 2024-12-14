@@ -9,10 +9,12 @@ import com.everyonewaiter.common.AggregateRoot;
 import com.everyonewaiter.user.application.domain.model.Email;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class MailHistory extends AggregateRoot {
 
 	private final MailHistoryId id;
