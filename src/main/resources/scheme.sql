@@ -24,6 +24,8 @@ CREATE TABLE device
     updated_at DATETIME(6) NOT NULL
 ) ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS mail_history;
+
 CREATE TABLE mail_history
 (
     id         BIGINT PRIMARY KEY,
