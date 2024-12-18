@@ -11,9 +11,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.ISpringTemplateEngine;
 
-import com.everyonewaiter.mail.application.port.in.EmailAuthenticationUseCase;
+import com.everyonewaiter.mail.application.port.in.EmailAuthenticationMailUseCase;
 import com.everyonewaiter.mail.application.port.in.EmailSendExecutor;
-import com.everyonewaiter.mail.application.port.in.command.EmailAuthenticationCommand;
+import com.everyonewaiter.mail.application.port.in.command.EmailAuthenticationMailCommand;
 import com.everyonewaiter.mail.application.port.in.command.EmailSendToCommand;
 import com.everyonewaiter.security.ClientOriginRegistry;
 import com.everyonewaiter.security.JwtProvider;
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-class EmailAuthenticationService implements EmailAuthenticationUseCase {
+class EmailAuthenticationMailService implements EmailAuthenticationMailUseCase {
 
 	private static final String AUTHENTICATION_URL = "%s/users/activate?email=%s&token=%s";
 	private static final Long TEM_MINUTE_MILLISECONDS = 10 * 60 * 1000L;
@@ -38,7 +38,7 @@ class EmailAuthenticationService implements EmailAuthenticationUseCase {
 	private final UserFindPort userFindPort;
 
 	@Override
-	public void sendAuthenticationMail(EmailAuthenticationCommand command) {
+	public void sendEmailAuthenticationMail(EmailAuthenticationMailCommand command) {
 		Email recipient = command.email();
 		User user = userFindPort.findOrElseThrow(recipient);
 		check(user.isInactive(), () -> format("already.activated.user", recipient.value(), "Email"));
@@ -57,7 +57,7 @@ class EmailAuthenticationService implements EmailAuthenticationUseCase {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@TransactionalEventListener
 	public void handleSignUpUser(UserSignUpEvent event) {
-		EmailAuthenticationCommand command = new EmailAuthenticationCommand(event.email());
-		sendAuthenticationMail(command);
+		EmailAuthenticationMailCommand command = new EmailAuthenticationMailCommand(event.email());
+		sendEmailAuthenticationMail(command);
 	}
 }

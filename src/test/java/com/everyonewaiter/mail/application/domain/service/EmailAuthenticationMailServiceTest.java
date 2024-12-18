@@ -12,10 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.ISpringTemplateEngine;
 
-import com.everyonewaiter.fixture.mail.EmailAuthenticationCommandBuilder;
+import com.everyonewaiter.fixture.mail.EmailAuthenticationMailCommandBuilder;
 import com.everyonewaiter.fixture.user.UserBuilder;
 import com.everyonewaiter.mail.application.port.in.EmailSendExecutor;
-import com.everyonewaiter.mail.application.port.in.command.EmailAuthenticationCommand;
+import com.everyonewaiter.mail.application.port.in.command.EmailAuthenticationMailCommand;
 import com.everyonewaiter.security.ClientOriginRegistry;
 import com.everyonewaiter.security.JwtProvider;
 import com.everyonewaiter.user.application.domain.model.User;
@@ -23,7 +23,7 @@ import com.everyonewaiter.user.application.domain.model.UserStatus;
 import com.everyonewaiter.user.application.port.out.UserFindPort;
 
 @ExtendWith(MockitoExtension.class)
-class EmailAuthenticationServiceTest {
+class EmailAuthenticationMailServiceTest {
 
 	@Mock
 	ClientOriginRegistry clientOriginRegistry;
@@ -41,20 +41,20 @@ class EmailAuthenticationServiceTest {
 	UserFindPort userFindPort;
 
 	@InjectMocks
-	EmailAuthenticationService emailAuthenticationService;
+	EmailAuthenticationMailService emailAuthenticationMailService;
 
 	@DisplayName("이메일 인증 안내 메일을 발송한다.")
 	@Test
 	void sendAuthenticationMail() {
 		User user = new UserBuilder().setStatus(UserStatus.INACTIVE).build();
-		EmailAuthenticationCommand command = new EmailAuthenticationCommandBuilder().build();
+		EmailAuthenticationMailCommand command = new EmailAuthenticationMailCommandBuilder().build();
 
 		when(userFindPort.findOrElseThrow(any())).thenReturn(user);
 		when(clientOriginRegistry.getBaseUrl()).thenReturn("https://example.com");
 		when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("CONTENT");
 		when(jwtProvider.generate(any(), any())).thenReturn("ACCESS_TOKEN");
 
-		emailAuthenticationService.sendAuthenticationMail(command);
+		emailAuthenticationMailService.sendEmailAuthenticationMail(command);
 
 		verify(emailSendExecutor, times(1)).sendTo(any());
 	}
@@ -63,11 +63,11 @@ class EmailAuthenticationServiceTest {
 	@Test
 	void alreadyActivatedUser() {
 		User user = new UserBuilder().build();
-		EmailAuthenticationCommand command = new EmailAuthenticationCommandBuilder().build();
+		EmailAuthenticationMailCommand command = new EmailAuthenticationMailCommandBuilder().build();
 
 		when(userFindPort.findOrElseThrow(any())).thenReturn(user);
 
-		assertThatThrownBy(() -> emailAuthenticationService.sendAuthenticationMail(command))
+		assertThatThrownBy(() -> emailAuthenticationMailService.sendEmailAuthenticationMail(command))
 			.isInstanceOf(IllegalStateException.class);
 	}
 }
