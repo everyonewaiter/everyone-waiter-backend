@@ -1,5 +1,7 @@
 package com.everyonewaiter.user.application.domain.model;
 
+import static com.everyonewaiter.common.ExceptionMessageFormatter.*;
+import static com.everyonewaiter.common.PreconditionChecker.*;
 import static com.everyonewaiter.user.application.domain.model.UserRole.*;
 import static com.everyonewaiter.user.application.domain.model.UserStatus.*;
 
@@ -36,6 +38,11 @@ public class User extends AggregateRoot {
 
 	public void signIn(LocalDateTime now) {
 		this.lastSignInTime = now;
+	}
+
+	public void activate() {
+		check(isInactive(), () -> format("already.activated.user", email.value(), "Email"));
+		this.status = ACTIVE;
 	}
 
 	public boolean hasRole(UserRole role) {

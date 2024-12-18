@@ -41,6 +41,23 @@ class UserTest {
 		assertThat(user.getLastSignInTime()).isEqualTo(now);
 	}
 
+	@DisplayName("사용자의 상태를 활성화 상태로 변경한다.")
+	@Test
+	void activate() {
+		User user = new UserBuilder().setStatus(UserStatus.INACTIVE).build();
+
+		user.activate();
+
+		assertThat(user.getStatus()).isEqualTo(UserStatus.ACTIVE);
+	}
+
+	@DisplayName("사용자의 상태가 비활성 상태가 아니라면 활성화 시 예외가 발생한다.")
+	@Test
+	void invalidActivate() {
+		User user = new UserBuilder().build();
+		assertThatThrownBy(user::activate).isInstanceOf(IllegalStateException.class);
+	}
+
 	@DisplayName("사용자가 입력하는 권한을 가지고 있는지 확인한다.")
 	@MethodSource("hasRoleArgs")
 	@ParameterizedTest(name = "[{index}] => 사용자: {0}, 입력: {1}, 결과: {2}")
