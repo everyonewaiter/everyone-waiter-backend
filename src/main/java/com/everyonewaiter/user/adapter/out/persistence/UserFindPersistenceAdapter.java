@@ -1,5 +1,8 @@
 package com.everyonewaiter.user.adapter.out.persistence;
 
+import static com.everyonewaiter.common.ExceptionMessageFormatter.*;
+
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -20,5 +23,11 @@ class UserFindPersistenceAdapter implements UserFindPort {
 	@Override
 	public Optional<User> find(Email email) {
 		return userJdbcRepository.findByEmail(email.value()).map(userMapper::mapToDomain);
+	}
+
+	@Override
+	public User findOrElseThrow(Email email) {
+		return find(email).orElseThrow(() ->
+			new NoSuchElementException(format("not.found.user", email.value(), "Email")));
 	}
 }

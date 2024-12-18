@@ -1,0 +1,7 @@
+== 메일
+
+=== 이메일 인증 메일 발송
+
+NOTE: 사용자 가입 시 자동으로 인증 메일이 발송됨으로 해당 API는 토큰 만료로 인한 재발송시에만 사용하세요.
+
+operation::mail-email-authentication[snippets='http-request,request-fields,http-response']

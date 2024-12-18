@@ -12,17 +12,21 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.everyonewaiter.fixture.user.EmailBuilder;
+import com.everyonewaiter.fixture.user.EncodedPasswordBuilder;
+import com.everyonewaiter.fixture.user.PhoneNumberBuilder;
 import com.everyonewaiter.fixture.user.UserBuilder;
 
 class UserTest {
 
-	@DisplayName("회원가입 이벤트를 등록한다.")
+	@DisplayName("create 메서드로 사용자 인스턴스를 생성하면 회원가입 이벤트를 등록한다.")
 	@Test
 	void signUp() {
-		User user = new UserBuilder().build();
-
-		user.signUp();
-
+		User user = User.create(
+			new EmailBuilder().build(),
+			new EncodedPasswordBuilder().build(),
+			new PhoneNumberBuilder().build()
+		);
 		assertThat(user.domainEvents()).hasSize(1);
 	}
 
@@ -35,6 +39,23 @@ class UserTest {
 		user.signIn(now);
 
 		assertThat(user.getLastSignInTime()).isEqualTo(now);
+	}
+
+	@DisplayName("사용자의 상태를 활성화 상태로 변경한다.")
+	@Test
+	void activate() {
+		User user = new UserBuilder().setStatus(UserStatus.INACTIVE).build();
+
+		user.activate();
+
+		assertThat(user.getStatus()).isEqualTo(UserStatus.ACTIVE);
+	}
+
+	@DisplayName("사용자의 상태가 비활성 상태가 아니라면 활성화 시 예외가 발생한다.")
+	@Test
+	void invalidActivate() {
+		User user = new UserBuilder().build();
+		assertThatThrownBy(user::activate).isInstanceOf(IllegalStateException.class);
 	}
 
 	@DisplayName("사용자가 입력하는 권한을 가지고 있는지 확인한다.")
@@ -79,6 +100,22 @@ class UserTest {
 			Arguments.of(UserRole.ADMIN, UserRole.OWNER, false),
 			Arguments.of(UserRole.ADMIN, UserRole.ADMIN, false)
 		);
+	}
+
+	@DisplayName("사용자의 상태가 비활성화 상태인지 검사한다.")
+	@EnumSource(value = UserStatus.class, names = {"INACTIVE"})
+	@ParameterizedTest
+	void isInactive(UserStatus status) {
+		User user = new UserBuilder().setStatus(status).build();
+		assertThat(user.isInactive()).isTrue();
+	}
+
+	@DisplayName("사용자의 상태가 비활성화 상태가 아니라면 false를 반환한다.")
+	@EnumSource(value = UserStatus.class, names = {"INACTIVE"}, mode = EnumSource.Mode.EXCLUDE)
+	@ParameterizedTest
+	void invertIsInactive(UserStatus status) {
+		User user = new UserBuilder().setStatus(status).build();
+		assertThat(user.isInactive()).isFalse();
 	}
 
 	@DisplayName("입력하는 상태와 사용자의 상태가 다른지 검사한다.")

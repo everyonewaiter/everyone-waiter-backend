@@ -2,6 +2,7 @@ package com.everyonewaiter.user.adapter.out.persistence;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ class UserFindPersistenceAdapterTest {
 	@DisplayName("이메일로 사용자를 조회한다.")
 	@Test
 	void findByEmail() {
-		Email email = new EmailBuilder().setEmail("handwoong@gmail.com").build();
+		Email email = new EmailBuilder().build();
 
 		Optional<User> user = userFindPersistenceAdapter.find(email);
 
@@ -54,5 +55,20 @@ class UserFindPersistenceAdapterTest {
 		Optional<User> user = userFindPersistenceAdapter.find(email);
 
 		assertThat(user).isEmpty();
+	}
+
+	@DisplayName("이메일로 사용자를 조회한다.")
+	@Test
+	void findByEmailOrElseThrow() {
+		Email email = new EmailBuilder().build();
+		assertThatCode(() -> userFindPersistenceAdapter.findOrElseThrow(email)).doesNotThrowAnyException();
+	}
+
+	@DisplayName("이메일로 사용자를 조회하지 못하면 예외가 발생한다.")
+	@Test
+	void notFoundUserByEmailOrElseThrow() {
+		Email email = new EmailBuilder().setEmail("handwoong@naver.com").build();
+		assertThatThrownBy(() -> userFindPersistenceAdapter.findOrElseThrow(email))
+			.isInstanceOf(NoSuchElementException.class);
 	}
 }

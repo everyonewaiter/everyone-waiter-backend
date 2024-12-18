@@ -1,5 +1,10 @@
 package com.everyonewaiter.user.application.domain.model;
 
+import static com.everyonewaiter.common.ExceptionMessageFormatter.*;
+import static com.everyonewaiter.common.PreconditionChecker.*;
+import static com.everyonewaiter.user.application.domain.model.UserRole.*;
+import static com.everyonewaiter.user.application.domain.model.UserStatus.*;
+
 import java.time.LocalDateTime;
 
 import com.everyonewaiter.common.AggregateRoot;
@@ -26,15 +31,18 @@ public class User extends AggregateRoot {
 
 	public static User create(Email email, EncodedPassword password, PhoneNumber phoneNumber) {
 		LocalDateTime now = LocalDateTime.now();
-		return new User(new UserId(), now, now, email, password, phoneNumber, UserRole.USER, UserStatus.INACTIVE, now);
-	}
-
-	public void signUp() {
-		registerEvent(new UserSignUpEvent(email));
+		User user = new User(new UserId(), now, now, email, password, phoneNumber, USER, INACTIVE, now);
+		user.registerEvent(new UserSignUpEvent(email));
+		return user;
 	}
 
 	public void signIn(LocalDateTime now) {
 		this.lastSignInTime = now;
+	}
+
+	public void activate() {
+		check(isInactive(), () -> format("already.activated.user", email.value(), "Email"));
+		this.status = ACTIVE;
 	}
 
 	public boolean hasRole(UserRole role) {
@@ -43,6 +51,10 @@ public class User extends AggregateRoot {
 
 	public boolean lackRole(UserRole role) {
 		return !hasRole(role);
+	}
+
+	public boolean isInactive() {
+		return this.status == INACTIVE;
 	}
 
 	public boolean hasDifferentStatus(UserStatus status) {

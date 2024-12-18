@@ -125,6 +125,10 @@ public abstract class RestControllerTest {
 		});
 	}
 
+	protected String bearerToken() {
+		return "Bearer " + VALID_TOKEN;
+	}
+
 	protected <T> String convertToJsonString(T body) throws Exception {
 		return objectMapper.writeValueAsString(body);
 	}
