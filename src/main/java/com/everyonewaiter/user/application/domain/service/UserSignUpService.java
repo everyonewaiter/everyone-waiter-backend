@@ -39,7 +39,6 @@ class UserSignUpService implements UserSignUpUseCase {
 
 		EncodedPassword encodedPassword = new EncodedPassword(rawPasswordEncoder.encode(command.password()));
 		User user = User.create(email, encodedPassword, phoneNumber);
-		user.signUp();
 		return userCreatePort.create(user).getId();
 	}
 }
