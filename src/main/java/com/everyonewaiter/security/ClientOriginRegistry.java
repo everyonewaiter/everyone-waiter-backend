@@ -16,4 +16,8 @@ public class ClientOriginRegistry {
 	List<String> getUrls() {
 		return Collections.unmodifiableList(urls);
 	}
+
+	public String getBaseUrl() {
+		return urls.getFirst();
+	}
 }
