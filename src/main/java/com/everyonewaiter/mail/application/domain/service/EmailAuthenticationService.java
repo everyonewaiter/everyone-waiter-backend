@@ -3,7 +3,11 @@ package com.everyonewaiter.mail.application.domain.service;
 import static com.everyonewaiter.common.ExceptionMessageFormatter.*;
 import static com.everyonewaiter.common.PreconditionChecker.*;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.ISpringTemplateEngine;
 
@@ -15,6 +19,7 @@ import com.everyonewaiter.security.ClientOriginRegistry;
 import com.everyonewaiter.security.JwtProvider;
 import com.everyonewaiter.user.application.domain.model.Email;
 import com.everyonewaiter.user.application.domain.model.User;
+import com.everyonewaiter.user.application.domain.model.UserSignUpEvent;
 import com.everyonewaiter.user.application.port.out.UserFindPort;
 
 import lombok.RequiredArgsConstructor;
@@ -46,5 +51,13 @@ class EmailAuthenticationService implements EmailAuthenticationUseCase {
 		String content = templateEngine.process("email-authentication", context);
 
 		emailSendExecutor.sendTo(new EmailSendToCommand(recipient, "[모두의 웨이터] 이메일 인증 안내드립니다.", content));
+	}
+
+	@Async
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@TransactionalEventListener
+	public void handleSignUpUser(UserSignUpEvent event) {
+		EmailAuthenticationCommand command = new EmailAuthenticationCommand(event.email());
+		sendAuthenticationMail(command);
 	}
 }
