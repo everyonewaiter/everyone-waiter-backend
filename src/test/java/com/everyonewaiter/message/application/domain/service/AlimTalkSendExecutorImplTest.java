@@ -73,4 +73,17 @@ class AlimTalkSendExecutorImplTest {
 		verify(messageHistoryCreatePort, times(1)).create(captor.capture());
 		assertThat(captor.getValue().getFirst().getStatus()).isEqualTo(MessageHistoryStatus.FAIL);
 	}
+
+	@DisplayName("잘못된 알림톡 메시지 본문이라면 메시지 히스토리의 상태는 FAIL이다.")
+	@Test
+	void invalidSendTo() {
+		AlimTalkSendDetail alimTalkSendDetail = new AlimTalkSendDetailBuilder()
+			.addMessage("01087654321", "CONTENT")
+			.build();
+
+		alimTalkSendExecutor.sendTo(alimTalkSendDetail);
+
+		verify(messageHistoryCreatePort, times(1)).create(captor.capture());
+		assertThat(captor.getValue().getFirst().getStatus()).isEqualTo(MessageHistoryStatus.FAIL);
+	}
 }
