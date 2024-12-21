@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 class EmailAuthenticationMailService implements EmailAuthenticationMailUseCase {
 
 	private static final String AUTHENTICATION_URL = "%s/users/activate?email=%s&token=%s";
