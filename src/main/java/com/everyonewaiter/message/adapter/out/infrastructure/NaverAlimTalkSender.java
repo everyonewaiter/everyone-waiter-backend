@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import com.everyonewaiter.message.application.domain.model.AlimTalkMessage;
 import com.everyonewaiter.message.application.port.out.AlimTalkSender;
-import com.everyonewaiter.message.application.port.out.dto.AlimTalkButton;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,10 @@ class NaverAlimTalkSender implements AlimTalkSender {
 	private final NaverSensProperties naverSensProperties;
 
 	@Override
-	public void sendTo(String templateCode, String recipient, String content) {
+	public void sendTo(String templateCode, AlimTalkMessage message) {
 		String url = naverSensProperties.getAlimTalkSendUrl();
 		String channelId = naverSensProperties.getChannelId();
-		AlimTalkSendRequest request = new AlimTalkSendRequest(channelId, templateCode, recipient, content);
+		AlimTalkSendRequest request = new AlimTalkSendRequest(channelId, templateCode, message);
 
 		naverSensClient.initialize(HttpMethod.POST, url)
 			.post()
@@ -40,25 +40,10 @@ class NaverAlimTalkSender implements AlimTalkSender {
 		private final String plusFriendId;
 		private final String templateCode;
 
-		public AlimTalkSendRequest(String channelId, String templateCode, String recipient, String content) {
-			this.messages.add(new AlimTalkMessage(recipient, content));
+		public AlimTalkSendRequest(String channelId, String templateCode, AlimTalkMessage message) {
+			this.messages.add(message);
 			this.plusFriendId = channelId;
 			this.templateCode = templateCode;
-		}
-	}
-
-	@Data
-	static class AlimTalkMessage {
-
-		private final List<AlimTalkButton> buttons = new ArrayList<>();
-		private final String content;
-		private final String to;
-		private final boolean useSmsFailover;
-
-		public AlimTalkMessage(String recipient, String content) {
-			this.content = content;
-			this.to = recipient;
-			this.useSmsFailover = true;
 		}
 	}
 }
