@@ -14,6 +14,7 @@ public class EmailSendDetailBuilder {
 
 	public EmailSendDetail build() {
 		return new EmailSendDetail() {
+
 			@Override
 			public List<Email> recipients() {
 				return recipients;
