@@ -6,5 +6,5 @@ import com.everyonewaiter.message.application.domain.model.MessageHistory;
 
 public interface MessageHistoryCreatePort {
 
-	void create(List<MessageHistory> messageHistories);
+	List<MessageHistory> create(List<MessageHistory> messageHistories);
 }
