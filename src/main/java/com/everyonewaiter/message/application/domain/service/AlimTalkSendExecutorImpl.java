@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.springframework.boot.autoconfigure.mail.MailProperties;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.everyonewaiter.message.application.domain.model.AlimTalkMessage;
@@ -21,7 +21,7 @@ import com.everyonewaiter.user.application.domain.model.PhoneNumber;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Transactional
 class AlimTalkSendExecutorImpl implements AlimTalkSendExecutor {
