@@ -5,5 +5,5 @@ import com.everyonewaiter.authentication.application.domain.model.Authentication
 
 public interface AuthenticationCodeFindPort {
 
-	AuthenticationCode findOrElseThrow(AuthenticationCodeKey key);
+	AuthenticationCode findOrElseThrowAndDelete(AuthenticationCodeKey key);
 }

@@ -32,10 +32,12 @@ class AuthenticationCodeRedisAdapter implements AuthenticationCodeCreatePort, Au
 	}
 
 	@Override
-	public AuthenticationCode findOrElseThrow(AuthenticationCodeKey key) {
-		return Optional.ofNullable(redisTemplate.opsForValue().get(key.getValue()))
+	public AuthenticationCode findOrElseThrowAndDelete(AuthenticationCodeKey key) {
+		AuthenticationCode authenticationCode = Optional.ofNullable(redisTemplate.opsForValue().get(key.getValue()))
 			.map(code -> mapToDomain(key, code))
 			.orElseThrow(() -> new NoSuchElementException(format("not.found.authentication.code", key, "Key")));
+		redisTemplate.delete(key.getValue());
+		return authenticationCode;
 	}
 
 	private AuthenticationCode mapToDomain(AuthenticationCodeKey key, String code) {

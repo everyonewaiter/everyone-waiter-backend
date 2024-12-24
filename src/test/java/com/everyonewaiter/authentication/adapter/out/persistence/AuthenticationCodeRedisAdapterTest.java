@@ -44,7 +44,7 @@ class AuthenticationCodeRedisAdapterTest extends RedisAdapterTest {
 		AuthenticationCodeKey key = new AuthenticationCodeKeyBuilder().build();
 		redisTemplate.opsForValue().set(key.getValue(), String.valueOf(code));
 
-		AuthenticationCode actual = authenticationCodeRedisAdapter.findOrElseThrow(key);
+		AuthenticationCode actual = authenticationCodeRedisAdapter.findOrElseThrowAndDelete(key);
 
 		assertThat(actual.getCode()).isEqualTo(code);
 	}
@@ -53,11 +53,25 @@ class AuthenticationCodeRedisAdapterTest extends RedisAdapterTest {
 	@Test
 	void findOrElseThrow() {
 		AuthenticationCodeKey key = new AuthenticationCodeKeyBuilder().build();
-		assertThatThrownBy(() -> authenticationCodeRedisAdapter.findOrElseThrow(key))
+		assertThatThrownBy(() -> authenticationCodeRedisAdapter.findOrElseThrowAndDelete(key))
 			.isInstanceOf(NoSuchElementException.class);
 	}
 
 	private String getAuthenticationCodeValue(AuthenticationCodeKey authenticationCodeKey) {
 		return redisTemplate.opsForValue().get(authenticationCodeKey.getValue());
+	}
+
+	@DisplayName("인증 번호를 조회한 후 삭제한다.")
+	@Test
+	void findOrElseThrowAndDelete() {
+		int code = 123456;
+		AuthenticationCodeKey key = new AuthenticationCodeKeyBuilder().build();
+		redisTemplate.opsForValue().set(key.getValue(), String.valueOf(code));
+
+		AuthenticationCode authenticationCode = authenticationCodeRedisAdapter.findOrElseThrowAndDelete(key);
+
+		String actual = getAuthenticationCodeValue(key);
+		assertThat(actual).isNull();
+		assertThat(authenticationCode.getCode()).isEqualTo(code);
 	}
 }
