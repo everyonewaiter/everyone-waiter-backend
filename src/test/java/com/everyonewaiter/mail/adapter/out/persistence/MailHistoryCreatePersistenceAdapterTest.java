@@ -11,9 +11,8 @@ import com.everyonewaiter.PersistenceAdapterTest;
 import com.everyonewaiter.fixture.mail.MailHistoryBuilder;
 import com.everyonewaiter.mail.application.domain.model.MailHistory;
 
-@PersistenceAdapterTest
 @Import(MailHistoryCreatePersistenceAdapter.class)
-class MailHistoryCreatePersistenceAdapterTest {
+class MailHistoryCreatePersistenceAdapterTest extends PersistenceAdapterTest {
 
 	@Autowired
 	MailHistoryCreatePersistenceAdapter mailHistoryCreatePersistenceAdapter;

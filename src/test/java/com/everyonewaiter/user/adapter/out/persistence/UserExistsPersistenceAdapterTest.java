@@ -18,9 +18,8 @@ import com.everyonewaiter.fixture.user.UserBuilder;
 import com.everyonewaiter.user.application.domain.model.Email;
 import com.everyonewaiter.user.application.domain.model.PhoneNumber;
 
-@PersistenceAdapterTest
 @Import(UserExistsPersistenceAdapter.class)
-class UserExistsPersistenceAdapterTest {
+class UserExistsPersistenceAdapterTest extends PersistenceAdapterTest {
 
 	@Autowired
 	JdbcAggregateTemplate jdbcAggregateTemplate;

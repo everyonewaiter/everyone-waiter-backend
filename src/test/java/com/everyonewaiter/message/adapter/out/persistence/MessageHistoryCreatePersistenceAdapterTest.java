@@ -13,9 +13,8 @@ import com.everyonewaiter.PersistenceAdapterTest;
 import com.everyonewaiter.fixture.message.MessageHistoryBuilder;
 import com.everyonewaiter.message.application.domain.model.MessageHistory;
 
-@PersistenceAdapterTest
 @Import(MessageHistoryCreatePersistenceAdapter.class)
-class MessageHistoryCreatePersistenceAdapterTest {
+class MessageHistoryCreatePersistenceAdapterTest extends PersistenceAdapterTest {
 
 	@Autowired
 	MessageHistoryCreatePersistenceAdapter messageHistoryCreatePersistenceAdapter;

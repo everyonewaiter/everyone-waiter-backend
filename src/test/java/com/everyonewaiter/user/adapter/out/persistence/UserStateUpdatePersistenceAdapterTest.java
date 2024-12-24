@@ -18,9 +18,8 @@ import com.everyonewaiter.user.application.domain.model.User;
 import com.everyonewaiter.user.application.domain.model.UserId;
 import com.everyonewaiter.user.application.domain.model.UserStatus;
 
-@PersistenceAdapterTest
 @Import(UserStateUpdatePersistenceAdapter.class)
-class UserStateUpdatePersistenceAdapterTest {
+class UserStateUpdatePersistenceAdapterTest extends PersistenceAdapterTest {
 
 	@Autowired
 	JdbcAggregateTemplate jdbcAggregateTemplate;
