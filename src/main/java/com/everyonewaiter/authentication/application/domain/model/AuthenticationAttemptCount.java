@@ -1,5 +1,7 @@
 package com.everyonewaiter.authentication.application.domain.model;
 
+import static com.everyonewaiter.common.PreconditionChecker.*;
+
 import com.everyonewaiter.common.AggregateRoot;
 import com.everyonewaiter.user.application.domain.model.PhoneNumber;
 
@@ -35,5 +37,14 @@ public class AuthenticationAttemptCount extends AggregateRoot {
 		this.purpose = purpose;
 		this.count = count;
 		this.expirationSeconds = expirationSeconds;
+	}
+
+	public boolean isNew() {
+		return count <= 1;
+	}
+
+	public void increment(AuthenticationAttemptCountIncrementStrategy strategy) {
+		check(strategy.isNotExceed(this), () -> "check.exceed.authentication.attempt");
+		this.count++;
 	}
 }
