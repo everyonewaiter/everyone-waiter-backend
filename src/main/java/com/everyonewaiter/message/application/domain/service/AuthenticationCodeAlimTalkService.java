@@ -1,8 +1,12 @@
 package com.everyonewaiter.message.application.domain.service;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
+import com.everyonewaiter.authentication.application.domain.model.AuthenticationCodeCreateEvent;
 import com.everyonewaiter.message.application.domain.model.AlimTalkMessage;
 import com.everyonewaiter.message.application.port.in.AlimTalkSendExecutor;
 import com.everyonewaiter.message.application.port.in.AuthenticationCodeAlimTalkUseCase;
@@ -30,5 +34,14 @@ class AuthenticationCodeAlimTalkService implements AuthenticationCodeAlimTalkUse
 
 		AlimTalkMessage message = new AlimTalkMessage(recipient.value(), content);
 		alimTalkSendExecutor.sendTo(new AlimTalkSendToCommand("authenticationCode", message));
+	}
+
+	@Async
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@TransactionalEventListener
+	public void handleGenerateAuthenticationCode(AuthenticationCodeCreateEvent event) {
+		AuthenticationCodeAlimTalkCommand command =
+			new AuthenticationCodeAlimTalkCommand(event.phoneNumber(), event.authenticationCode());
+		sendAuthenticationCodeAlimTalk(command);
 	}
 }
