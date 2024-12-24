@@ -14,6 +14,11 @@ public record Email(String value) {
 
 	public Email {
 		require(StringUtils.hasText(value), () -> "require.email.not.blank");
-		require(EMAIL_PATTERN.matcher(value).matches(), () -> format("invalid.email.format", value, "Email"));
+		require(EMAIL_PATTERN.matcher(value).matches(), () -> format("invalid.email.format", value));
+	}
+
+	@Override
+	public String toString() {
+		return value;
 	}
 }

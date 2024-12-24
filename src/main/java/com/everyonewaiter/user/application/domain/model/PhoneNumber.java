@@ -14,9 +14,11 @@ public record PhoneNumber(String value) {
 
 	public PhoneNumber {
 		require(StringUtils.hasText(value), () -> "require.phone-number.not.blank");
-		require(
-			PHONE_NUMBER_PATTERN.matcher(value).matches(),
-			() -> format("require.phone-number.format", value, "PhoneNumber")
-		);
+		require(PHONE_NUMBER_PATTERN.matcher(value).matches(), () -> format("require.phone-number.format", value));
+	}
+
+	@Override
+	public String toString() {
+		return value;
 	}
 }

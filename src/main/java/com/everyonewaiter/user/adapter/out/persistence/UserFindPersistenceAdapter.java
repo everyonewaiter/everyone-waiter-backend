@@ -27,7 +27,6 @@ class UserFindPersistenceAdapter implements UserFindPort {
 
 	@Override
 	public User findOrElseThrow(Email email) {
-		return find(email).orElseThrow(() ->
-			new NoSuchElementException(format("not.found.user", email.value(), "Email")));
+		return find(email).orElseThrow(() -> new NoSuchElementException(format("not.found.user", email)));
 	}
 }

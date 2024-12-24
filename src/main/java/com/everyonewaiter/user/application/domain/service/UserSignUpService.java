@@ -3,8 +3,6 @@ package com.everyonewaiter.user.application.domain.service;
 import static com.everyonewaiter.common.ExceptionMessageFormatter.*;
 import static com.everyonewaiter.common.PreconditionChecker.*;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +32,8 @@ class UserSignUpService implements UserSignUpUseCase {
 	public UserId signUp(UserSignUpCommand command) {
 		Email email = command.email();
 		PhoneNumber phoneNumber = command.phoneNumber();
-		check(!userExistsPort.exists(email), () -> format("already.use.email", List.of(email)));
-		check(!userExistsPort.exists(phoneNumber), () -> format("already.use.phone-number", List.of(phoneNumber)));
+		check(!userExistsPort.exists(email), () -> format("already.use.email", email));
+		check(!userExistsPort.exists(phoneNumber), () -> format("already.use.phone-number", phoneNumber));
 
 		EncodedPassword encodedPassword = new EncodedPassword(rawPasswordEncoder.encode(command.password()));
 		User user = User.create(email, encodedPassword, phoneNumber);
