@@ -1,5 +1,7 @@
 package com.everyonewaiter.authentication.application.domain.model;
 
+import org.springframework.util.Assert;
+
 import com.everyonewaiter.common.AggregateRoot;
 import com.everyonewaiter.user.application.domain.model.PhoneNumber;
 
@@ -37,6 +39,7 @@ public class AuthenticationCode extends AggregateRoot {
 		Integer code,
 		Long expirationSeconds
 	) {
+		Assert.notNull(code, "AuthenticationCode code must not be null");
 		this.key = new AuthenticationCodeKey(phoneNumber, purpose);
 		this.phoneNumber = phoneNumber;
 		this.purpose = purpose;
