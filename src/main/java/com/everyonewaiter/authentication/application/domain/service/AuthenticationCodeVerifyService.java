@@ -3,7 +3,6 @@ package com.everyonewaiter.authentication.application.domain.service;
 import static com.everyonewaiter.common.PreconditionChecker.*;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.everyonewaiter.authentication.application.domain.model.AuthenticationCode;
 import com.everyonewaiter.authentication.application.domain.model.AuthenticationPurpose;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 class AuthenticationCodeVerifyService implements AuthenticationCodeVerifyUseCase {
 
 	private final AuthenticationCodeFindPort authenticationCodeFindPort;

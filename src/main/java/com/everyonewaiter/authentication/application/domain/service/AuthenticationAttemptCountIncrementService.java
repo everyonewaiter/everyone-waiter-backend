@@ -1,7 +1,8 @@
 package com.everyonewaiter.authentication.application.domain.service;
 
+import java.time.Duration;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.everyonewaiter.authentication.application.domain.model.AuthenticationAttemptCount;
 import com.everyonewaiter.authentication.application.domain.model.AuthenticationAttemptCountIncrementStrategy;
@@ -18,10 +19,9 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 class AuthenticationAttemptCountIncrementService implements AuthenticationAttemptCountIncrementUseCase {
 
-	private static final Long ONE_DAY_MILLISECONDS = 24L * 60L * 60L * 1000L;
+	private static final Long ONE_DAY_SECONDS = Duration.ofDays(1).getSeconds();
 
 	private final AuthenticationAttemptCountCreatePort authenticationAttemptCountCreatePort;
 	private final AuthenticationAttemptCountFindPort authenticationAttemptCountFindPort;
@@ -38,7 +38,7 @@ class AuthenticationAttemptCountIncrementService implements AuthenticationAttemp
 
 		AuthenticationAttemptCountKey key = new AuthenticationAttemptCountKey(phoneNumber, purpose);
 		AuthenticationAttemptCount authenticationAttemptCount = authenticationAttemptCountFindPort.find(key)
-			.orElseGet(() -> new AuthenticationAttemptCount(phoneNumber, purpose, ONE_DAY_MILLISECONDS));
+			.orElseGet(() -> new AuthenticationAttemptCount(phoneNumber, purpose, ONE_DAY_SECONDS));
 
 		authenticationAttemptCount.increment(strategy);
 		incrementAuthenticationAttemptCount(key, authenticationAttemptCount);
