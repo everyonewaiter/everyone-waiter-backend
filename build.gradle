@@ -99,3 +99,7 @@ bootJar {
 tasks.named('build') {
     dependsOn copyDocument
 }
+
+jar {
+    enabled = false
+}
