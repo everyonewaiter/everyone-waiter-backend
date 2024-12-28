@@ -10,6 +10,8 @@ build/
 **/._.DS_Store
 *.log
 src/main/resources/static/docs/
+mysql/
+redis/
 
 ### STS ###
 .apt_generated
