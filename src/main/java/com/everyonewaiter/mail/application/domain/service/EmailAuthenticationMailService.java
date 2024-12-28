@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 class EmailAuthenticationMailService implements EmailAuthenticationMailUseCase {
 
 	private static final String AUTHENTICATION_URL = "%s/users/activate?email=%s&token=%s";
@@ -41,7 +42,7 @@ class EmailAuthenticationMailService implements EmailAuthenticationMailUseCase {
 	public void sendEmailAuthenticationMail(EmailAuthenticationMailCommand command) {
 		Email recipient = command.email();
 		User user = userFindPort.findOrElseThrow(recipient);
-		check(user.isInactive(), () -> format("already.activated.user", recipient.value(), "Email"));
+		check(user.isInactive(), () -> format("already.activated.user", recipient));
 
 		String baseUrl = clientOriginRegistry.getBaseUrl();
 		String accessToken = jwtProvider.generate(recipient, TEM_MINUTE_MILLISECONDS);

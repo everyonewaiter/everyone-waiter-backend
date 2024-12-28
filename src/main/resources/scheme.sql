@@ -39,4 +39,19 @@ CREATE TABLE mail_history
     updated_at DATETIME(6)              NOT NULL
 ) ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS message_history;
+
+CREATE TABLE message_history
+(
+    id            BIGINT PRIMARY KEY,
+    sender        VARCHAR(50)              NOT NULL,
+    recipient     VARCHAR(20)              NOT NULL,
+    template_code VARCHAR(30)              NOT NULL,
+    content       TEXT                     NOT NULL,
+    status        ENUM ('SUCCESS', 'FAIL') NOT NULL,
+    cause         TEXT                     NOT NULL,
+    created_at    DATETIME(6)              NOT NULL,
+    updated_at    DATETIME(6)              NOT NULL
+) ENGINE = InnoDB;
+
 SET FOREIGN_KEY_CHECKS = 1;

@@ -11,9 +11,8 @@ import com.everyonewaiter.PersistenceAdapterTest;
 import com.everyonewaiter.fixture.user.UserBuilder;
 import com.everyonewaiter.user.application.domain.model.User;
 
-@PersistenceAdapterTest
 @Import(UserCreatePersistenceAdapter.class)
-class UserCreatePersistenceAdapterTest {
+class UserCreatePersistenceAdapterTest extends PersistenceAdapterTest {
 
 	@Autowired
 	UserCreatePersistenceAdapter userCreatePersistenceAdapter;

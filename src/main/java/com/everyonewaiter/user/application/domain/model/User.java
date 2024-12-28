@@ -41,7 +41,7 @@ public class User extends AggregateRoot {
 	}
 
 	public void activate() {
-		check(isInactive(), () -> format("already.activated.user", email.value(), "Email"));
+		check(isInactive(), () -> format("already.activated.user", email));
 		this.status = ACTIVE;
 	}
 

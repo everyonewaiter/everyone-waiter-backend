@@ -10,9 +10,16 @@ import org.junit.jupiter.api.Test;
 
 class ExceptionMessageFormatterTest {
 
+	@DisplayName("인자를 전달받아 메시지 소스 문자열 형태로 변환한다.")
+	@Test
+	void formatWithArg() {
+		String formattedMessage = format("message", "handwoong@gmail.com");
+		assertThat(formattedMessage).isEqualTo("message {handwoong@gmail.com} [String]");
+	}
+
 	@DisplayName("인자와 설명을 전달받아 메시지 소스 문자열 형태로 변환한다.")
 	@Test
-	void formatMessage() {
+	void formatWithArgAndDetail() {
 		String formattedMessage = format("message", "handwoong@gmail.com", "Email");
 		assertThat(formattedMessage).isEqualTo("message {handwoong@gmail.com} [Email]");
 	}
