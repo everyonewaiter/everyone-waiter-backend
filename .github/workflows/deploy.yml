@@ -52,7 +52,6 @@ jobs:
           bastion-id: ${{ secrets.OCI_BASTION_ID }}
           public-key: ${{ secrets.OCI_INSTANCE_PUBLIC_KEY }}
           session-type: 'PORT_FORWARDING'
-          session-ttl-seconds: '1200'
           target-resource-id: ${{ secrets.OCI_INSTANCE_ID }}
           target-resource-port: 22
 
