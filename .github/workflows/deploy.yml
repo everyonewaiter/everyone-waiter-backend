@@ -51,11 +51,11 @@ jobs:
           oci-region: ${{ secrets.OCI_CLI_REGION }}
           bastion-id: ${{ secrets.OCI_BASTION_ID }}
           public-key: ${{ secrets.OCI_INSTANCE_PUBLIC_KEY }}
-          session-type: 'MANAGED_SSH'
-          session‑ttl‑seconds: 1200
+          session-type: 'PORT_FORWARDING'
+          session-ttl-seconds: '1200'
           target-resource-id: ${{ secrets.OCI_INSTANCE_ID }}
-          target-resource-user: 'ubuntu'
+          target-resource-port: 22
 
-      - name: Execute SSH Command
+      - name: Setup SSH Tunnel
         run: |
-          echo '${{ steps.bastion.outputs.ssh-command }}'
+          echo '${{ steps.bastion.outputs.session-id }}'
