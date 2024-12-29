@@ -55,6 +55,22 @@ jobs:
           target-resource-id: ${{ secrets.OCI_INSTANCE_ID }}
           target-resource-port: 22
 
+      - name: Copy OCI Instance SSH Private Key
+        run: |
+          echo "${{ secrets.OCI_INSTANCE_PRIVATE_KEY }}" > ./oci_instance_ssh.key
+          chmod 600 ./oci_instance_ssh.key
+
       - name: Setup SSH Tunnel
         run: |
-          echo '${{ steps.bastion.outputs.session-id }}'
+          ssh -i ./oci_instance_ssh.key -N -L 6000:${{ secrets.OCI_INSTANCE_PRIVATE_IP }}:22 -p 22 ${{ steps.bastion.outputs.session-id }}@${{ secrets.OCI_BASTION_PUBLIC_IP }} &
+
+      - name: Connect SSH & Deploy
+        run: |
+          ssh -i ./oci_instance_ssh.key -p 6000 ubuntu@localhost
+          echo "Connected OCI"
+          pwd
+
+      - name: Cleanup SSH
+        if: always()
+        run: |
+          pkill ssh || true
