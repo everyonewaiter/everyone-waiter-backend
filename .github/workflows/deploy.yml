@@ -1,0 +1,29 @@
+name: Deploy To OCI
+
+on:
+  push:
+    branches:
+      - feature/#29
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull Github Repository
+        uses: actions/checkout@v4
+
+      - name: Install JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup application.properties
+        run: |
+          rm -rf ./src/main/resources/application.properties
+          rm -rf ./src/main/resources/application-dev.properties
+          echo "${{ secrets.DEV_ROOT_APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
+          echo "${{ secrets.DEV_APPLICATION_PROPERTIES }}" > ./src/main/resources/application-dev.properties
+
+      - name: Gradle Build
+        run: ./gradlew clean build
