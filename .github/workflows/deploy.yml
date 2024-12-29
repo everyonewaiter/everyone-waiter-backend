@@ -36,6 +36,6 @@ jobs:
 
       - name: Push Release to Docker Hub
         run: |
-          docker build -t ${{ vars.DOCKERHUB_REPOSITORY_NAME }} .
+          docker build -t ${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development .
           docker tag ${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development
           docker push ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development
