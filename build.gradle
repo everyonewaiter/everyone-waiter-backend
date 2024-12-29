@@ -60,16 +60,6 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-def generated = 'src/main/generated'
-
-tasks.withType(JavaCompile).configureEach {
-    options.getGeneratedSourceOutputDirectory().set(file(generated))
-}
-
-tasks.named('clean') {
-    delete file(generated)
-}
-
 tasks.named('test') {
     outputs.dir snippetsDir
     useJUnitPlatform()
