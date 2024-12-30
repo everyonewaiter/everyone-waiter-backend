@@ -55,12 +55,19 @@ jobs:
           target-resource-id: ${{ secrets.OCI_INSTANCE_ID }}
           target-resource-port: 22
 
+      - name: Copy SSH Key
+        env:
+          OCI_INSTANCE_PRIVATE_KEY: ${{ secrets.OCI_INSTANCE_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private.key
+          sudo chmod 600 private.key
+
       - name: Connect SSH & Deploy
         run: |
           mkdir ~/.ssh
           ssh-keyscan -H ${{ secrets.OCI_BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts
           eval "$(ssh-agent -s)"
-          ssh-add - <<< ${{ secrets.OCI_INSTANCE_PRIVATE_KEY }}
+          ssh-add private.key
           ssh -fN -L 2222:${{ secrets.OCI_INSTANCE_PRIVATE_IP }}:22 -p 22 ${{ steps.bastion.outputs.session-id }}@${{ secrets.OCI_BASTION_PUBLIC_IP }}
           sleep 5
           ssh-keyscan -p 2222 localhost >> ~/.ssh/known_hosts
