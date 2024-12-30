@@ -55,23 +55,17 @@ jobs:
           target-resource-id: ${{ secrets.OCI_INSTANCE_ID }}
           target-resource-port: 22
 
-      - name: Copy SSH Key
-        env:
-          OCI_INSTANCE_PRIVATE_KEY: ${{ secrets.OCI_INSTANCE_PRIVATE_KEY }}
-        run: |
-          echo "$SSH_PRIVATE_KEY" > private.key
-          sudo chmod 600 private.key
-
       - name: Connect SSH & Deploy
         run: |
+          echo "${{ steps.bastion.outputs.ssh-command }}"
           mkdir ~/.ssh
           ssh-keyscan -H ${{ secrets.OCI_BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts
-          eval "$(ssh-agent -s)"
-          ssh-add private.key
-          ssh -fN -L 2222:${{ secrets.OCI_INSTANCE_PRIVATE_IP }}:22 -p 22 ${{ steps.bastion.outputs.session-id }}@${{ secrets.OCI_BASTION_PUBLIC_IP }}
+          echo "${{ secrets.OCI_INSTANCE_PRIVATE_KEY }}" > ~/.ssh/oci_instance_ssh.key
+          chmod 600 ~/.ssh/oci_instance_ssh.key
+          ssh -i ~/.ssh/oci_instance_ssh.key -fN -L 2222:${{ secrets.OCI_INSTANCE_PRIVATE_IP }}:22 -p 22 ${{ steps.bastion.outputs.session-id }}@${{ secrets.OCI_BASTION_PUBLIC_IP }}
           sleep 5
           ssh-keyscan -p 2222 localhost >> ~/.ssh/known_hosts
-          ssh -p 2222 ubuntu@localhost
+          ssh -i ~/.ssh/oci_instance_ssh.key -p 2222 ubuntu@localhost
           sudo docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development
 
       - name: Cleanup SSH
