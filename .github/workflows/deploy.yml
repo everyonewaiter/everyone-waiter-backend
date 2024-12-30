@@ -59,6 +59,7 @@ jobs:
         run: |
           mkdir ~/.ssh
           ssh-keyscan -H ${{ secrets.OCI_BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H localhost >> ~/.ssh/known_hosts
           echo "${{ secrets.OCI_INSTANCE_PRIVATE_KEY }}" > ~/.ssh/oci_instance_ssh.key
           chmod 600 ~/.ssh/oci_instance_ssh.key
 
