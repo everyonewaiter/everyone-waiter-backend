@@ -58,17 +58,17 @@ jobs:
       - name: Copy OCI Instance SSH Private Key
         run: |
           mkdir ~/.ssh
-          ssh-keyscan -H ${{ secrets.OCI_BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts
-          ssh-keyscan -H localhost >> ~/.ssh/known_hosts
           echo "${{ secrets.OCI_INSTANCE_PRIVATE_KEY }}" > ~/.ssh/oci_instance_ssh.key
           chmod 600 ~/.ssh/oci_instance_ssh.key
 
       - name: Setup SSH Tunnel
         run: |
+          ssh-keyscan -H ${{ secrets.OCI_BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts
           ssh -i ~/.ssh/oci_instance_ssh.key -fN -L 2222:${{ secrets.OCI_INSTANCE_PRIVATE_IP }}:22 -p 22 ${{ steps.bastion.outputs.session-id }}@${{ secrets.OCI_BASTION_PUBLIC_IP }}
 
       - name: Connect SSH & Deploy
         run: |
+          ssh-keyscan -H localhost >> ~/.ssh/known_hosts
           ssh -i ~/.ssh/oci_instance_ssh.key -p 2222 ubuntu@localhost
           echo "Connected OCI"
           pwd
