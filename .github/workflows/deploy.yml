@@ -8,6 +8,12 @@ on:
 jobs:
   Deploy:
     runs-on: ubuntu-latest
+    env:
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
     steps:
       - name: Pull Github Repository
         uses: actions/checkout@v4
@@ -28,50 +34,21 @@ jobs:
       - name: Gradle Build
         run: ./gradlew clean build
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: Get OCIR Repository
+        uses: oracle-actions/get-ocir-repository@v1.3.0
+        id: get-ocir-repository
         with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          name: backend-container-repo
+          compartment: ${{ secrets.OCI_COMPARTMENT_OCID }}
 
-      - name: Push Release to Docker Hub
-        run: |
-          docker build -t ${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development .
-          docker tag ${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development
-          docker push ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development
-
-      - name: OCI Bastion Session Create
-        id: bastion
-        uses: domenikk/oci-bastion-action@v1
+      - name: Log into OCIR
+        uses: oracle-actions/login-ocir@v1.3.0
+        id: login-ocir
         with:
-          oci-user: ${{ secrets.OCI_CLI_USER }}
-          oci-tenancy: ${{ secrets.OCI_CLI_TENANCY }}
-          oci-fingerprint: ${{ secrets.OCI_CLI_FINGERPRINT }}
-          oci-key-content: ${{ secrets.OCI_CLI_KEY_CONTENT }}
-          oci-region: ${{ secrets.OCI_CLI_REGION }}
-          bastion-id: ${{ secrets.OCI_BASTION_ID }}
-          public-key: ${{ secrets.OCI_INSTANCE_PUBLIC_KEY }}
-          session-type: 'PORT_FORWARDING'
-          target-resource-id: ${{ secrets.OCI_INSTANCE_ID }}
-          target-resource-port: 22
+          auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
 
-      - name: Connect SSH & Deploy
+      - name: Push container image
         run: |
-          mkdir ~/.ssh
-          ssh-keyscan -H ${{ secrets.OCI_BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts
-          echo "${{ secrets.OCI_INSTANCE_PRIVATE_KEY }}" > ~/.ssh/oci_instance_ssh.key
-          chmod 600 ~/.ssh/oci_instance_ssh.key
-          ssh -i ~/.ssh/oci_instance_ssh.key -fN -L 2222:${{ secrets.OCI_INSTANCE_PRIVATE_IP }}:22 -p 22 ${{ steps.bastion.outputs.session-id }}@${{ secrets.OCI_BASTION_PUBLIC_IP }}
-          sleep 5
-          ssh-keyscan -p 2222 localhost >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/oci_instance_ssh.key -p 2222 ubuntu@localhost
-          sudo docker login -u ${{ vars.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          sudo docker stop everyone-waiter || true
-          sudo docker rm everyone-waiter || true
-          sudo docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development
-          sudo docker run -d -p 8080:8080 --name everyone-waiter --network everyonewaiter-network ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY_NAME }}:development
-
-      - name: Cleanup SSH
-        if: always()
-        run: |
-          pkill ssh || true
+          docker build --platform linux/arm64/v8 -t everyonewaiter-backend .
+          docker tag "everyonewaiter-backend" "${{ steps.get-ocir-repository.outputs.repo_path }}:development"
+          docker push "${{ steps.get-ocir-repository.outputs.repo_path }}:development"
