@@ -49,17 +49,17 @@ jobs:
 
       - name: Push container image
         run: |
-          docker build --platform linux/arm64/v8 -t everyonewaiter-backend .
-          docker tag "everyonewaiter-backend" "${{ steps.get-ocir-repository.outputs.repo_path }}:development"
-          docker push "${{ steps.get-ocir-repository.outputs.repo_path }}:development"
+          docker build --platform linux/arm64/v8 -t everyonewaiter-backend:${{ github.ref_name }} .
+          docker tag "everyonewaiter-backend" "${{ steps.get-ocir-repository.outputs.repo_path }}:${{ github.ref_name }}"
+          docker push "${{ steps.get-ocir-repository.outputs.repo_path }}:${{ github.ref_name }}"
 
       - name: Create OCI Bastion Session
         uses: domenikk/oci-bastion-action@v1
         id: bastion
         with:
-          oci‑user: $OCI_CLI_USER
-          oci‑tenancy: $OCI_CLI_TENANCY
-          oci‑fingerprint: $OCI_CLI_FINGERPRINT
+          oci-user: $OCI_CLI_USER
+          oci-tenancy: $OCI_CLI_TENANCY
+          oci-fingerprint: $OCI_CLI_FINGERPRINT
           oci-key-content: $OCI_CLI_KEY_CONTENT
           oci-region: $OCI_CLI_REGION
           bastion-id: ${{ secrets.OCI_BASTION_OCID }}
@@ -68,7 +68,7 @@ jobs:
           target-resource-id: ${{ secrets.OCI_INSTANCE_OCID }}
           target-resource-user: 'opc'
 
-      - name: Connect SSH
+      - name: Connect SSH & Deploy
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.OCI_HOST }}
@@ -83,5 +83,5 @@ jobs:
             echo "${{ secrets.OCI_AUTH_TOKEN }}" | docker login ${{ secrets.OCIR_REGION_KEY }} -u ${{ secrets.OCIR_DOCKER_USERNAME }} --password-stdin
             sudo docker stop everyonewaiter-backend || true
             sudo docker rm everyonewaiter-backend || true
-            sudo docker pull ${{ steps.get-ocir-repository.outputs.repo_path }}:development
-            sudo docker run -d -p 8080:8080 --name everyonewaiter-backend --network everyonewaiter-network ${{ steps.get-ocir-repository.outputs.repo_path }}:development
+            sudo docker pull ${{ steps.get-ocir-repository.outputs.repo_path }}:${{ github.ref_name }}
+            sudo docker run -d -p 8080:8080 --name everyonewaiter-backend --network everyonewaiter-network ${{ steps.get-ocir-repository.outputs.repo_path }}:${{ github.ref_name }}
