@@ -14,7 +14,6 @@ jobs:
       OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
-      TAG: development
     steps:
       - name: Pull Github Repository
         uses: actions/checkout@v4
@@ -50,9 +49,9 @@ jobs:
 
       - name: Push container image
         run: |
-          docker build --platform linux/arm64/v8 -t everyonewaiter-backend:$TAG .
-          docker tag "everyonewaiter-backend" "${{ steps.get-ocir-repository.outputs.repo_path }}:$TAG"
-          docker push "${{ steps.get-ocir-repository.outputs.repo_path }}:$TAG"
+          docker build --platform linux/arm64/v8 -t everyonewaiter-backend:development .
+          docker tag everyonewaiter-backend:development ${{ steps.get-ocir-repository.outputs.repo_path }}:development
+          docker push ${{ steps.get-ocir-repository.outputs.repo_path }}:development
 
       - name: Create OCI Bastion Session
         uses: domenikk/oci-bastion-action@v1
@@ -84,5 +83,5 @@ jobs:
             echo "${{ secrets.OCI_AUTH_TOKEN }}" | docker login ${{ secrets.OCIR_REGION_KEY }} -u ${{ secrets.OCIR_DOCKER_USERNAME }} --password-stdin
             sudo docker stop everyonewaiter-backend || true
             sudo docker rm everyonewaiter-backend || true
-            sudo docker pull ${{ steps.get-ocir-repository.outputs.repo_path }}:$TAG
-            sudo docker run -d -p 8080:8080 --name everyonewaiter-backend --network everyonewaiter-network ${{ steps.get-ocir-repository.outputs.repo_path }}:$TAG
+            sudo docker pull ${{ steps.get-ocir-repository.outputs.repo_path }}:development
+            sudo docker run -d -p 8080:8080 --name everyonewaiter-backend --network everyonewaiter-network ${{ steps.get-ocir-repository.outputs.repo_path }}:development
