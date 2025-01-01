@@ -49,7 +49,7 @@ class EmailAuthenticationMailService implements EmailAuthenticationMailUseCase {
 
 		Context context = new Context();
 		context.setVariable("authenticationUrl", AUTHENTICATION_URL.formatted(baseUrl, recipient.value(), accessToken));
-		String content = templateEngine.process("email-authentication", context);
+		String content = templateEngine.process("mail/email-authentication", context);
 
 		emailSendExecutor.sendTo(new EmailSendToCommand(recipient, "[모두의 웨이터] 이메일 인증 안내드립니다.", content));
 	}
