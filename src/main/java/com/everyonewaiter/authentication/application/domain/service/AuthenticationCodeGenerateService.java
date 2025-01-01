@@ -1,7 +1,6 @@
 package com.everyonewaiter.authentication.application.domain.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.everyonewaiter.authentication.application.domain.model.AuthenticationCode;
 import com.everyonewaiter.authentication.application.domain.model.AuthenticationCodeGenerator;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 class AuthenticationCodeGenerateService implements AuthenticationCodeGenerateUseCase {
 
 	private static final Long FIVE_MINUTE_MILLISECONDS = 5 * 60 * 1000L;
