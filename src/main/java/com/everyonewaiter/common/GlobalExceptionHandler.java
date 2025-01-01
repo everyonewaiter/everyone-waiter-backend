@@ -98,7 +98,7 @@ class GlobalExceptionHandler {
 
 	@ExceptionHandler
 	ResponseEntity<ErrorResponse> handleAccountExpired(HttpServletRequest request, AccountExpiredException exception) {
-		MessagePart messagePart = new MessagePart("require.email.certification");
+		MessagePart messagePart = new MessagePart("require.email.authentication");
 		log(request, HttpStatus.UNAUTHORIZED, messagePart.getLogMessage(messageSource), exception);
 		return ResponseEntity
 			.status(HttpStatus.UNAUTHORIZED)
