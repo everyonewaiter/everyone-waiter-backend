@@ -3,7 +3,6 @@ package com.everyonewaiter.mail.application.domain.service;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +21,16 @@ import lombok.RequiredArgsConstructor;
 class EmailSendExecutorImpl implements EmailSendExecutor {
 
 	private final MailHistoryCreatePort mailHistoryCreatePort;
-	private final MailProperties mailProperties;
 	private final MailSender mailSender;
 
 	@Override
 	public void sendTo(EmailSendDetail detail) {
-		Email sender = new Email(mailProperties.getUsername());
-		MailHistory mailHistory = execute(sender, actionSendTo(), detail);
+		MailHistory mailHistory = execute(actionSendTo(), detail);
 		mailHistoryCreatePort.create(mailHistory);
 	}
 
-	private MailHistory execute(Email sender, Consumer<EmailSendDetail> action, EmailSendDetail detail) {
+	private MailHistory execute(Consumer<EmailSendDetail> action, EmailSendDetail detail) {
+		Email sender = detail.sender();
 		List<Email> recipients = detail.recipients();
 		String subject = detail.subject();
 		String content = detail.content();

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,21 +26,20 @@ import lombok.RequiredArgsConstructor;
 class AlimTalkSendExecutorImpl implements AlimTalkSendExecutor {
 
 	private final AlimTalkSender alimTalkSender;
-	private final MailProperties mailProperties;
 	private final MessageHistoryCreatePort messageHistoryCreatePort;
 
 	@Override
-	public void sendTo(AlimTalkSendDetail command) {
-		Email sender = new Email(mailProperties.getUsername());
-		List<MessageHistory> messageHistories = execute(sender, actionSendTo(), command);
+	public void sendTo(AlimTalkSendDetail detail) {
+		List<MessageHistory> messageHistories = execute(actionSendTo(), detail);
 		messageHistoryCreatePort.create(messageHistories);
 	}
 
-	private List<MessageHistory> execute(Email sender, Consumer<AlimTalkSendDetail> action, AlimTalkSendDetail detail) {
+	private List<MessageHistory> execute(Consumer<AlimTalkSendDetail> action, AlimTalkSendDetail detail) {
+		Email sender = detail.sender();
 		String templateCode = detail.templateCode();
 		List<AlimTalkMessage> messages = detail.messages();
-		List<MessageHistory> messageHistories = new ArrayList<>();
 
+		List<MessageHistory> messageHistories = new ArrayList<>();
 		try {
 			action.accept(detail);
 			messages.forEach(message -> messageHistories.add(createSuccessHistory(sender, message, templateCode)));
