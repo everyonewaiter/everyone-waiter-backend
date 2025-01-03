@@ -4,5 +4,5 @@ import com.everyonewaiter.message.application.port.in.command.AlimTalkSendDetail
 
 public interface AlimTalkSendExecutor {
 
-	void sendTo(AlimTalkSendDetail command);
+	void sendTo(AlimTalkSendDetail detail);
 }

@@ -8,12 +8,18 @@ import com.everyonewaiter.user.application.domain.model.Email;
 
 public class EmailSendDetailBuilder {
 
+	private final Email sender = new EmailBuilder().build();
 	private final List<Email> recipients = List.of(new EmailBuilder().build());
 	private final String subject = "SUBJECT";
 	private final String content = "CONTENT";
 
 	public EmailSendDetail build() {
 		return new EmailSendDetail() {
+
+			@Override
+			public Email sender() {
+				return sender;
+			}
 
 			@Override
 			public List<Email> recipients() {
