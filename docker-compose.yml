@@ -16,6 +16,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: everyone_waiter
+    volumes:
+      - ./mysql:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:

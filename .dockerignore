@@ -1,3 +1,4 @@
 .idea
 mysql
-redis
+.git
+.DS_Store
